@@ -5,6 +5,11 @@
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized"
   },
   "devDependencies": {
-    "assemblyscript": "github:AssemblyScript/assemblyscript"
+    "assemblyscript": "github:AssemblyScript/assemblyscript",
+    "browser-sync": "^2.24.7",
+    "gulp": "^3.9.1"
+  },
+  "dependencies": {
+    "glmw": "git+https://github.com/vtange/glmw.git"
   }
 }

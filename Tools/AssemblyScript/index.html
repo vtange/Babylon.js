@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>test - AssemblyScript</title>
+<meta name="viewport" content="user-scalable=0" />
+<style>
+</style>
+</head>
+<body>
+<script>"use strict";
+
+// Fetch and instantiate the module
+fetch("build/optimized.wasm")
+.then(response => response.arrayBuffer())
+.then(buffer => WebAssembly.instantiate(buffer, {
+  env: {
+    memory: new WebAssembly.Memory({ initial: 1 }),
+    abort: function() { throw Error("abort called"); }
+  }
+}))
+.then(module => {
+  var exports = module.instance.exports;
+
+  // Update about 30 times a second
+
+  (function update() {
+    setTimeout(update, 1000 / 30);
+    exports.add(500,500);
+  })();
+
+  /*
+  // Keep rendering
+  (function render() {
+    requestAnimationFrame(render);
+    var cx = width / 2;
+    var cy = height / 2;
+    ctx.clearRect(0, 0, width, height);
+    for (let i = 0, k = stars.length; i < k; ++i) {
+      let star = stars[i];
+      ctx.fillStyle = "#fff";
+      ctx.beginPath();
+      ctx.globalAlpha = 0.5 + 0.5 * Math.random();
+      ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1.0;
+    for (let i = 0;; ++i) {
+      let body = exports.getBody(i);
+      if (!body) break;
+      let ptr = body >>> 3;
+      let x = mem[ptr];
+      let y = mem[ptr + 1];
+      let z = mem[ptr + 2];
+      let m = mem[ptr + 6];
+      ctx.fillStyle = planets[i].color;
+      ctx.beginPath();
+      ctx.arc(cx + x * 10, cy + y * 10, 2 * planets[i].r, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  })();*/
+}).catch(err => {
+  alert("Failed to load WASM: " + err.message + " (ad blocker, maybe?)");
+  console.log(err.stack);
+});
+</script>
+</body>
+</html>
