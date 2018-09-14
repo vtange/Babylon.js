@@ -163,7 +163,9 @@ export function toLuminance(r: f64, g: f64, b: f64): f64 {
                                       888           "Y88P"
 
 */
-
+export function multiply3PairsFAKE(r: f64, r2: f64, g: f64, g2: f64, b: f64, b2: f64): f64[] {
+    return [r*r2, g*g2, b*b2];
+}
 
 /**
  * Multiply each Color3 rgb values by the given Color3 rgb values in a new Color3 object
