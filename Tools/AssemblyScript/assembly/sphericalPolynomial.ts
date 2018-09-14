@@ -1,4 +1,4 @@
-import { Color3, Vector3 } from './index';
+import { Color3, Vector3 } from './indexfail';
 /**
  * Class representing spherical polynomial coefficients to the 3rd degree
  */
