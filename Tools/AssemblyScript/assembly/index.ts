@@ -1,11 +1,13 @@
-export function add(a: i32, b: i32): i32 {
-    //store<i32>(0,a + b);
-    //store<i32>(1,c + d);
-    return a + b;
-}
-export function addstore(a: i32, b: i32): void {
+export function add(a: i32, b: i32): void {
     store<i32>(0,a + b);
 }
+export function getSizeI32(): usize {
+    return sizeof<i32>();
+}
+export function getSizeF64(): usize {
+    return sizeof<f64>();
+}
+
 
 /*------------------------*/
 export const ToGammaSpace = <f64>(1 / 2.2);
@@ -117,6 +119,7 @@ public getHashCode(): i32 {
  */
 export function getHashCodeMatrix(m: i32[]): i32 {
     let hash = m[0] || 0;
+    //m must be length 16
     for (let i = 1; i < 16; i++) {
         hash = (hash * 397) ^ (m[i] || 0);
     }
@@ -163,6 +166,16 @@ export function toLuminance(r: f64, g: f64, b: f64): f64 {
                                       888           "Y88P"
 
 */
+
+export function multiply1Pair(r: f64, r2: f64): void {
+    store<f64>(0,r * r2);
+}
+
+export function multiply2Pairs(r: f64, r2: f64, g: f64, g2: f64): void {
+    store<f64>(0,r * r2);
+    store<f64>(8,g * g2);
+}
+
 export function multiply3PairsFAKE(r: f64, r2: f64, g: f64, g2: f64, b: f64, b2: f64): f64[] {
     return [r*r2, g*g2, b*b2];
 }
@@ -173,9 +186,9 @@ export function multiply3PairsFAKE(r: f64, r2: f64, g: f64, g2: f64, b: f64, b2:
  * @returns the new Color3 object
  */
 export function multiply3Pairs(r: f64, r2: f64, g: f64, g2: f64, b: f64, b2: f64): void {
-    //store<f64>(0,r * r2);
-    //store<f64>(1,g * g2);
-    //store<f64>(2,b * b2);
+    store<f64>(0,r * r2);
+    store<f64>(8,g * g2);
+    store<f64>(16,b * b2);
 }
 
 /**
@@ -200,8 +213,8 @@ export function multiplyToRef(otherColor: Color3, result: Color3): this {
  * @returns a new Color4 object
  */
 export function multiply4Pairs(r: f64, r2: f64, g: f64, g2: f64, b: f64, b2: f64, a: f64, a2: f64): void {
-    //store<f64>(0,r * r2);
-    //store<f64>(1,g * g2);
-    //store<f64>(2,b * b2);
-    //store<f64>(3,a * a2);
+    store<f64>(0,r * r2);
+    store<f64>(8,g * g2);
+    store<f64>(16,b * b2);
+    store<f64>(24,a * a2);
 }
