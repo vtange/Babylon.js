@@ -7,7 +7,10 @@
 </style>
 </head>
 <body>
-<script src="orig_math.js"></script>
+<script src="babylon.math.js"></script>
+<script src="babylon.math.scalar.js"></script>
+<script src="babylon.sphericalPolynomial.js"></script>
+<script src="test1.js"></script>
 <script>"use strict";
 
 // Fetch and instantiate the module
@@ -22,126 +25,12 @@ fetch("build/optimized.wasm")
 .then(module => {
   var exports = window.exports = module.instance.exports;
   var readWasmMemAsF64 = new Float64Array(module.instance.exports.memory.buffer);
-  window.runTest = function(){
-    var color3 = new BABYLON.Color3(0.0001,0.0001,0.0001);
-    var color3n2 = new BABYLON.Color3(0.0001,0.0001,0.0001);
-    color3.addWasmStyle = function()
-    {
-      exports.add3Pairs(this.r,0.0001,this.g,0.0001,this.b,0.0001);
-      this.r = readWasmMemAsF64[0];
-      this.g = readWasmMemAsF64[1];
-      this.b = readWasmMemAsF64[2];
-      return this;
-    }
-    color3.addJS = function()
-    {
-      this.r += 0.0001;
-      this.g += 0.0001;
-      this.b += 0.0001;
-      return this;
-    }
-
-    console.time("js add");
-    for(let i=0; i<10000000; i++)
-    {
-      color3.addJS();
-    }
-    console.timeEnd("js add");
-    //-----
-    console.time("wa add");
-    for(let i=0; i<10000000; i++)
-    {
-      color3.addWasmStyle();
-    }
-    console.timeEnd("wa add");
-    color3.superMultiply = function()
-    {
-      exports.superMultiply(this.r, 0.0001, 1.31140, 0.0051, 1.311210, 0.0701, 1.329, 10.12144);
-      this.r = readWasmMemAsF64[0];
-      return this;
-    }
-    color3.superMultiplyJS = function()
-    {
-      this.r = this.r * 0.0001 * 1.31140 * 0.0051 * 1.311210 * 0.0701 * 1.329 * 10.12144;
-      return this;
-    }
-    console.time("js sm");
-    for(let i=0; i<10000000; i++)
-    {
-      color3.superMultiplyJS();
-    }
-    console.timeEnd("js sm");
-    //-----
-    console.time("wa sm");
-    for(let i=0; i<10000000; i++)
-    {
-      color3.superMultiply();
-    }
-    console.timeEnd("wa sm");
-
-    color3.superAdd = function()
-    {
-      exports.superAdd(this.r, 0.0001, 1.31140, 0.0051, 1.311210, 0.0701, 1.329, 10.12144);
-      this.r = readWasmMemAsF64[0];
-      return this;
-    }
-    color3.superAddJS = function()
-    {
-      this.r = this.r + 0.0001 + 1.31140 + 0.0051 + 1.311210 + 0.0701 + 1.329 + 10.12144;
-      return this;
-    }
-
-    console.time("js sa");
-    for(let i=0; i<10000000; i++)
-    {
-      color3.superAddJS();
-    }
-    console.timeEnd("js sa");
-    //-----
-    console.time("wa sa");
-    for(let i=0; i<10000000; i++)
-    {
-      color3.superAdd();
-    }
-    console.timeEnd("wa sa");
-
-  }
+  window.runTest = test1;
   // Update about 60 times a second
   /*
   (function update() {
     setTimeout(update, 1000 / 60);
     exports.add(500,500);
-  })();*/
-
-  /*
-  // Keep rendering
-  (function render() {
-    requestAnimationFrame(render);
-    var cx = width / 2;
-    var cy = height / 2;
-    ctx.clearRect(0, 0, width, height);
-    for (let i = 0, k = stars.length; i < k; ++i) {
-      let star = stars[i];
-      ctx.fillStyle = "#fff";
-      ctx.beginPath();
-      ctx.globalAlpha = 0.5 + 0.5 * Math.random();
-      ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI);
-      ctx.fill();
-    }
-    ctx.globalAlpha = 1.0;
-    for (let i = 0;; ++i) {
-      let body = exports.getBody(i);
-      if (!body) break;
-      let ptr = body >>> 3;
-      let x = mem[ptr];
-      let y = mem[ptr + 1];
-      let z = mem[ptr + 2];
-      let m = mem[ptr + 6];
-      ctx.fillStyle = planets[i].color;
-      ctx.beginPath();
-      ctx.arc(cx + x * 10, cy + y * 10, 2 * planets[i].r, 0, 2 * Math.PI);
-      ctx.fill();
-    }
   })();*/
 }).catch(err => {
   alert("Failed to load WASM: " + err.message + " (ad blocker, maybe?)");
