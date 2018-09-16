@@ -7,6 +7,7 @@
 </style>
 </head>
 <body>
+<script src="orig_math.js"></script>
 <script>"use strict";
 
 // Fetch and instantiate the module
@@ -19,14 +20,47 @@ fetch("build/optimized.wasm")
   }
 }))
 .then(module => {
-  var exports = module.instance.exports;
+  var exports = window.exports = module.instance.exports;
+  var readWasmMemAsF64 = new Float64Array(module.instance.exports.memory.buffer);
+  window.runTest = function(){
+    var color3 = new BABYLON.Color3(0.0001,0.0001,0.0001);
+    var color3n2 = new BABYLON.Color3(0.0001,0.0001,0.0001);
+    color3.addWasmStyle = function()
+    {
+      exports.add3Pairs(this.r,0.0001,this.g,0.0001,this.b,0.0001);
+      this.r = readWasmMemAsF64[0];
+      this.g = readWasmMemAsF64[1];
+      this.b = readWasmMemAsF64[2];
+      return this;
+    }
+    color3.addJS = function()
+    {
+      this.r += 0.0001;
+      this.g += 0.0001;
+      this.b += 0.0001;
+      return this;
+    }
 
-  // Update about 30 times a second
-
+    console.time("OriginalAdd");
+    for(let i=0; i<10000000; i++)
+    {
+      color3.addJS();
+    }
+    console.timeEnd("OriginalAdd");
+    //-----
+    console.time("wasmAdd");
+    for(let i=0; i<10000000; i++)
+    {
+      color3.addWasmStyle();
+    }
+    console.timeEnd("wasmAdd");
+  }
+  // Update about 60 times a second
+  /*
   (function update() {
-    setTimeout(update, 1000 / 30);
+    setTimeout(update, 1000 / 60);
     exports.add(500,500);
-  })();
+  })();*/
 
   /*
   // Keep rendering
