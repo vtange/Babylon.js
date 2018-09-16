@@ -41,19 +41,70 @@ fetch("build/optimized.wasm")
       return this;
     }
 
-    console.time("OriginalAdd");
+    console.time("js add");
     for(let i=0; i<10000000; i++)
     {
       color3.addJS();
     }
-    console.timeEnd("OriginalAdd");
+    console.timeEnd("js add");
     //-----
-    console.time("wasmAdd");
+    console.time("wa add");
     for(let i=0; i<10000000; i++)
     {
       color3.addWasmStyle();
     }
-    console.timeEnd("wasmAdd");
+    console.timeEnd("wa add");
+    color3.superMultiply = function()
+    {
+      exports.superMultiply(this.r, 0.0001, 1.31140, 0.0051, 1.311210, 0.0701, 1.329, 10.12144);
+      this.r = readWasmMemAsF64[0];
+      return this;
+    }
+    color3.superMultiplyJS = function()
+    {
+      this.r = this.r * 0.0001 * 1.31140 * 0.0051 * 1.311210 * 0.0701 * 1.329 * 10.12144;
+      return this;
+    }
+    console.time("js sm");
+    for(let i=0; i<10000000; i++)
+    {
+      color3.superMultiplyJS();
+    }
+    console.timeEnd("js sm");
+    //-----
+    console.time("wa sm");
+    for(let i=0; i<10000000; i++)
+    {
+      color3.superMultiply();
+    }
+    console.timeEnd("wa sm");
+
+    color3.superAdd = function()
+    {
+      exports.superAdd(this.r, 0.0001, 1.31140, 0.0051, 1.311210, 0.0701, 1.329, 10.12144);
+      this.r = readWasmMemAsF64[0];
+      return this;
+    }
+    color3.superAddJS = function()
+    {
+      this.r = this.r + 0.0001 + 1.31140 + 0.0051 + 1.311210 + 0.0701 + 1.329 + 10.12144;
+      return this;
+    }
+
+    console.time("js sa");
+    for(let i=0; i<10000000; i++)
+    {
+      color3.superAddJS();
+    }
+    console.timeEnd("js sa");
+    //-----
+    console.time("wa sa");
+    for(let i=0; i<10000000; i++)
+    {
+      color3.superAdd();
+    }
+    console.timeEnd("wa sa");
+
   }
   // Update about 60 times a second
   /*

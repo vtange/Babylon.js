@@ -31,6 +31,14 @@ export function add4Pairs(r: f64, r2: f64, g: f64, g2: f64, b: f64, b2: f64, a: 
     store<f64>(24,a + a2);
 }
 
+export function superAdd(r: f64, r2: f64, g: f64, g2: f64, b: f64, b2: f64, a: f64, a2: f64): void {
+    store<f64>(0,r + r2 + g + g2 + b + b2 + a + a2);
+}
+
+export function superMultiply(r: f64, r2: f64, g: f64, g2: f64, b: f64, b2: f64, a: f64, a2: f64): void {
+    store<f64>(0,r * r2 * g * g2 * b * b2 * a * a2);
+}
+
 /*------------------------*/
 export const ToGammaSpace = <f64>(1 / 2.2);
 export const ToLinearSpace: f64 = 2.2;
