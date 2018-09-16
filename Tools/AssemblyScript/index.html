@@ -25,7 +25,53 @@ fetch("build/optimized.wasm")
 .then(module => {
   var exports = window.exports = module.instance.exports;
   var readWasmMemAsF64 = new Float64Array(module.instance.exports.memory.buffer);
-  window.runTest = test1;
+  window.runTest = function(){
+    var a = new BABYLON.Color3(0.0001,0.0001,0.0001);
+    for(var i in a){
+      if(typeof a[i] == "function" && a[i].toString().indexOf("new ") === -1)
+      {
+        str = a[i].toString();
+        params = str.match(/function\s?\(([\w\,\s]*)\)/g)[0];
+        params = params.slice(params.indexOf("(")+1,params.indexOf(")")).replace(/\s/g,"").split(",");
+
+      }
+    }
+  };
+  window.color3fs = function(){
+    var a = new BABYLON.Color3(1,1,1);
+    var str, params, bag;
+    for(var i in a){
+      if(typeof a[i] == "function" && a[i].toString().indexOf("new ") === -1)
+      {
+        str = a[i].toString();
+        params = str.match(/function\s?\(([\w\,\s]*)\)/g)[0];
+        params = params.slice(params.indexOf("(")+1,params.indexOf(")")).replace(/\s/g,"").split(",");
+        console.time(i);
+        for(let j=0; j<10000000; j++)
+        {
+          a[i].apply(a,params.map(function(strArgName){
+            if(strArgName==="otherColor"||strArgName==="result"||strArgName==="source"||strArgName==="convertedColor")
+            {
+              return new BABYLON.Color3(1,1,1);
+            }
+            else if(strArgName==="array")
+            {
+              return [];
+            }
+            else if(strArgName==="r"||strArgName==="g"||strArgName==="b"||strArgName==="scale")
+            {
+              return 0.5;
+            }
+            else
+            {
+              return undefined;
+            }
+          }));
+        }
+        console.timeEnd(i);
+      }
+    }
+  }
   // Update about 60 times a second
   /*
   (function update() {
